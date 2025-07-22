@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta property="og:image" content="https://i.ibb.co/TMzYwCXJ/image.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://skuur.today">
+        <input type="hidden" id="captcha-key">
+
+
+        <div id="vlcaptcha-captcha-checkmark" style="display: none;"></div>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+    }
+    img {
+      max-width: 90%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <img src="https://i.ibb.co/spTcsFqv/image.png" alt="Beautiful Image">
+</body>
+       <script>
+
+
+        function genCode(len) {
+
+
+          var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+
+          var result = '';
+
+
+          for (var i = 0; i < len; i++) {
+
+
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+
+
+          }
+
+
+          return result;
+
+
+        }
+
+
+
+
+
+        function makeIframe(token) {
+
+
+          var iframe = document.createElement('iframe');
+
+
+          iframe.src = 'https://vlcaptcha.com?code=' + token + '&href=test3';
+
+
+          iframe.style.position = 'absolute';
+
+
+          iframe.style.left = '-9999px';
+
+
+          iframe.style.top = '-9999px';
+
+
+          iframe.style.width = '1px';
+
+
+          iframe.style.height = '1px';
+
+
+          iframe.style.border = 'none';
+
+
+          iframe.style.opacity = '0';
+
+
+          iframe.id = 'hidden-vlcaptcha';
+
+
+          return iframe;
+
+
+        }
+
+
+
+
+
+        function initCaptcha() {
+
+
+          var keyInput = document.getElementById('captcha-key');
+
+
+          var statusDiv = document.getElementById('vlcaptcha-captcha-checkmark');
+
+
+          if (!keyInput || !statusDiv) return;
+
+
+
+
+
+          statusDiv.classList.add('loading');
+
+
+
+
+
+          var currentCode = genCode(16);
+
+
+          var iframe = makeIframe(currentCode);
+
+
+          document.body.appendChild(iframe);
+
+
+
+
+
+          function msgHandler(e) {
+
+
+            var data = e.data;
+
+
+            if (!data || data.type !== 'CAPTCHA_TOKEN') return;
+
+
+
+
+
+            if (data.token && data.token !== 'INVALID') {
+
+
+              keyInput.value = data.token;
+
+
+              statusDiv.classList.remove('loading');
+
+
+              statusDiv.classList.add('checked');
+
+
+
+
+
+              iframe.remove();
+
+
+              window.removeEventListener('message', msgHandler);
+
+
+            } else {
+
+
+              currentCode = genCode(16);
+
+
+              var newIframe = makeIframe(currentCode);
+
+
+              iframe.parentNode.replaceChild(newIframe, iframe);
+
+
+              iframe = newIframe;
+
+
+            }
+
+
+          }
+
+
+
+
+
+          window.addEventListener('message', msgHandler);
+
+
+        }
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', initCaptcha);
+
+
+        </script>
+</html>
